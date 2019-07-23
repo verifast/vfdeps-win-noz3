@@ -1,0 +1,18 @@
+language: C
+
+os:
+  - windows
+
+install:
+  - ./setup-build.sh
+
+script:
+  - CC= ./build.sh
+
+deploy:
+  provider: bintray
+  file: bintray.json
+  user: bart-jacobs
+  key:
+    secure: "i9sKBGCr/ICJY0T/Tiryd8328Cp3NsKGq5uf2EH00sHupuixb6D5OeqCXISLQ9cg4wpfBRs7aVmBgpB+7Spq4oJk7zcrDr/4PME07ECsGV8i5zIA6QArjnJ5eZkMknD7xivU2XkdOQGXIN0Tn9gyieUIE0WqMHDKUArQ9jXnQdn5KTbkz3P5lHJuPu6k1VaMpbVq9Oau5+I4DYERR/XLJhN4pF7e30C36Ya3MgTKgzXHx0d2e3XZFWIAoENyHybhNPjmuumjIRn9RaxYq/Gjh4lkxF4O2RGLflg79I6HwcO/L5QH+cl+LWPCBVPtIXDaIm4pzcEogR3V+BCSoerVtCnwkwksPlEzgYtq1K9X7IG3C/GUJS/xqDI4iRCUMR52gQH1lWMKH811PjN8Sz6s5Qg+UPNZ52LRG5NvACaj/VLHelg0TGlx8b82xUqj7llx84hB2UzlDxRn+acdUGUp7AiF+nYWmXqJj6o2Lp4o5O+oH9IHhkZ3aQQMRGlUEYnSbA7FAakbEqrUi6Whc54VQlVxRsFRboSt9BGjUFjSHGRHIpsTDHz2zVv1nJduMb0ZjrWuneApWz/XURMTn+s5/aMQK4YAVHQBkyKPt4ouUQx1pUTOMpCabJfxZs/Lml7Swru6yld82PxJ8Uga/MAwyWtvlLQeOI+Yb9l4pjICT9Y="
+  skip_cleanup: true
