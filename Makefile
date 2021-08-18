@@ -187,7 +187,7 @@ $(LABLGTK_SRC):
 
 $(LABLGTK_CFG): $(LABLGTK_SRC) $(CAMLP4_BINARY) $(GTK_BINARY)
 	cd lablgtk-$(LABLGTK_VERSION) && \
-	  (./configure || bash -vx ./configure)
+	  (./configure "CC=i686-w64-mingw32-gcc -fcommon" "USE_CC=1" || bash -vx ./configure "CC=i686-w64-mingw32-gcc -fcommon" "USE_CC=1")
 
 $(LABLGTK_BUILD): $(LABLGTK_CFG)
 	cd lablgtk-$(LABLGTK_VERSION) && \
