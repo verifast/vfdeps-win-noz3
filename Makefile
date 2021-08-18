@@ -1,7 +1,7 @@
 MAKEDIR:=$(shell pwd)
 PATH:=$(shell cygpath "$(MAKEDIR)"):$(shell cygpath "$(PREFIX)")/bin:$(PATH)
 
-all: ocaml findlib num ocamlbuild camlp4 gtk lablgtk dune sexplib0
+all: ocaml findlib num ocamlbuild camlp4 gtk lablgtk dune sexplib0 base
 
 clean::
 	-rm -Rf $(PREFIX)
@@ -271,4 +271,23 @@ sexplib0: $(SEXPLIB0_BINARY)
 
 clean::
 	-rm -Rf sexplib0-$(SEXPLIB0_VERSION)
+
+# ---- base ----
+BASE_VERSION=0.13.2
+BASE_BINARY=$(PREFIX)/lib/ocaml/base/base.cmxa
+
+base-$(BASE_VERSION).tar.gz:
+	curl -Lfo $@ https://github.com/janestreet/base/archive/refs/tags/v$(BASE_VERSION).tar.gz
+
+base-$(BASE_VERSION): base-$(BASE_VERSION).tar.gz
+	tar xzf $<
+
+$(BASE_BINARY): $(DUNE_BINARY) $(DUNE_CONF_BINARY) $(SEXPLIB0_BINARY) | base-$(BASE_VERSION)
+	cd $| && dune build && dune install
+
+base: sexplib0 $(BASE_BINARY)
+.PHONY: base
+
+clean::
+	-rm -Rf base-$(BASE_VERSION)
 
