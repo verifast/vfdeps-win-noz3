@@ -231,7 +231,7 @@ clean::
 
 # ---- dune ----
 DUNE_VERSION=2.0.1
-DUNE_BINARY=$(PREFIX)/bin/dune
+DUNE_BINARY=$(PREFIX)/bin/dune.exe
 
 dune-$(DUNE_VERSION).tar.gz:
 	curl -Lfo $@ https://github.com/ocaml/dune/archive/refs/tags/$(DUNE_VERSION).tar.gz
@@ -241,17 +241,13 @@ dune-$(DUNE_VERSION): dune-$(DUNE_VERSION).tar.gz
 
 $(DUNE_BINARY): | dune-$(DUNE_VERSION)
 	cd $| && ./configure --libdir=$(PREFIX)/lib/ocaml && make release && make install
+	cd $| && ./dune.exe build @install && ./dune.exe install
 
 dune: $(DUNE_BINARY)
 .PHONY: dune
 
 clean::
 	-rm -Rf dune-$(DUNE_VERSION)
-
-DUNE_CONF_BINARY=$(PREFIX)/lib/dune-configurator/configurator.cmxa
-
-$(DUNE_CONF_BINARY): $(DUNE_BINARY) | dune-$(DUNE_VERSION)
-	cd $| && ./dune.exe build @install && ./dune.exe install
 
 # ---- sexplib0 ----
 SEXPLIB0_VERSION=0.14.0
@@ -282,7 +278,7 @@ base-$(BASE_VERSION).tar.gz:
 base-$(BASE_VERSION): base-$(BASE_VERSION).tar.gz
 	tar xzf $<
 
-$(BASE_BINARY): $(DUNE_BINARY) $(DUNE_CONF_BINARY) $(SEXPLIB0_BINARY) | base-$(BASE_VERSION)
+$(BASE_BINARY): $(DUNE_BINARY) $(SEXPLIB0_BINARY) | base-$(BASE_VERSION)
 	cd $| && dune build && dune install
 
 base: sexplib0 $(BASE_BINARY)
