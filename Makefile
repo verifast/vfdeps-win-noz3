@@ -251,7 +251,7 @@ clean::
 DUNE_CONF_BINARY=$(PREFIX)/lib/dune-configurator/configurator.cmxa
 
 $(DUNE_CONF_BINARY): $(DUNE_BINARY) | dune-$(DUNE_VERSION)
-	cd $| && dune build @install && dune install
+	cd $| && ./dune.exe build @install && ./dune.exe install
 
 # ---- sexplib0 ----
 SEXPLIB0_VERSION=0.14.0
