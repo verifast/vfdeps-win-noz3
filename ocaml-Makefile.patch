@@ -6,3 +6,7 @@
 < LIBDIR=$(PREFIX)/lib
 ---
 > LIBDIR=$(PREFIX)/lib/ocaml
+114c114
+< CFLAGS=-O -mms-bitfields -Wall -Wno-unused -fno-tree-vrp
+---
+> CFLAGS=-fcommon -O -mms-bitfields -Wall -Wno-unused -fno-tree-vrp
