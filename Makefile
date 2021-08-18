@@ -1,7 +1,7 @@
 MAKEDIR:=$(shell pwd)
 PATH:=$(shell cygpath "$(MAKEDIR)"):$(shell cygpath "$(PREFIX)")/bin:$(PATH)
 
-all: ocaml findlib num ocamlbuild camlp4 gtk lablgtk dune sexplib0 base
+all: ocaml findlib num ocamlbuild camlp4 gtk lablgtk dune sexplib0 base res stdio
 
 clean::
 	-rm -Rf $(PREFIX)
@@ -286,4 +286,42 @@ base: sexplib0 $(BASE_BINARY)
 
 clean::
 	-rm -Rf base-$(BASE_VERSION)
+
+# ---- res ----
+RES_VERSION=5.0.1
+RES_BINARY=$(PREFIX)/lib/ocaml/res/res.cmxa
+
+res-$(RES_VERSION).tar.gz:
+	curl -Lfo $@ https://github.com/mmottl/res/archive/refs/tags/$(RES_VERSION).tar.gz
+
+res-$(RES_VERSION): res-$(RES_VERSION).tar.gz
+	tar xzf $<
+
+$(RES_BINARY): $(DUNE_BINARY) | res-$(RES_VERSION)
+	cd $| && dune build && dune install
+
+res: $(RES_BINARY)
+.PHONY: res
+
+clean::
+	-rm -Rf res-$(RES_VERSION)
+
+# ---- stdio ----
+STDIO_VERSION=0.13.0
+STDIO_BINARY=$(PREFIX)/lib/ocaml/stdio/stdio.cmxa
+
+stdio-$(STDIO_VERSION).tar.gz:
+	curl -Lfo $@ https://github.com/janestreet/stdio/archive/refs/tags/v$(STDIO_VERSION).tar.gz
+
+stdio-$(STDIO_VERSION): stdio-$(STDIO_VERSION).tar.gz
+	tar xzf $<
+
+$(STDIO_BINARY): $(DUNE_BINARY) $(BASE_BINARY) | stdio-$(STDIO_VERSION)
+	cd $| && dune build && dune install
+
+stdio: $(STDIO_BINARY)
+.PHONY: stdio
+
+clean::
+	-rm -Rf stdio-$(STDIO_VERSION)
 
