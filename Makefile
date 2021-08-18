@@ -1,7 +1,7 @@
 MAKEDIR:=$(shell pwd)
 PATH:=$(shell cygpath "$(MAKEDIR)"):$(shell cygpath "$(PREFIX)")/bin:$(PATH)
 
-all: ocaml findlib num ocamlbuild camlp4 gtk lablgtk dune sexplib0 base res stdio
+all: ocaml findlib num ocamlbuild camlp4 gtk lablgtk dune sexplib0 base res stdio cppo ocplib-endian stdint result
 
 clean::
 	-rm -Rf $(PREFIX)
@@ -324,4 +324,81 @@ stdio: $(STDIO_BINARY)
 
 clean::
 	-rm -Rf stdio-$(STDIO_VERSION)
+
+# ---- cppo ----
+CPPO_VERSION=1.6.7
+CPPO_BINARY=$(PREFIX)/bin/cppo.exe
+
+cppo-$(CPPO_VERSION).tar.gz:
+	curl -Lfo $@ https://github.com/ocaml-community/cppo/archive/refs/tags/v$(CPPO_VERSION).tar.gz
+
+cppo-$(CPPO_VERSION): cppo-$(CPPO_VERSION).tar.gz
+	tar xzf $<
+
+$(CPPO_BINARY): $(DUNE_BINARY) | cppo-$(CPPO_VERSION)
+	cd $| && dune build && dune install
+
+cppo: $(CPPO_BINARY)
+.PHONY: cppo
+
+clean::
+	-rm -Rf cppo-$(CPPO_VERSION)
+
+# ---- ocplib-endian ----
+OCPLIB-ENDIAN_VERSION=1.1
+OCPLIB-ENDIAN_BINARY=$(PREFIX)/lib/ocaml/ocplib-endian/ocplib_endian.cmxa
+
+ocplib-endian-$(OCPLIB-ENDIAN_VERSION).tar.gz:
+	curl -Lfo $@ https://github.com/OCamlPro/ocplib-endian/archive/$(OCPLIB-ENDIAN_VERSION).tar.gz
+
+ocplib-endian-$(OCPLIB-ENDIAN_VERSION): ocplib-endian-$(OCPLIB-ENDIAN_VERSION).tar.gz
+	tar xzf $<
+
+$(OCPLIB-ENDIAN_BINARY): $(DUNE_BINARY) $(CPPO_BINARY) | ocplib-endian-$(OCPLIB-ENDIAN_VERSION)
+	cd $| && dune build && dune install
+
+ocplib-endian: $(OCPLIB-ENDIAN_BINARY)
+.PHONY: ocplib-endian
+
+clean::
+	-rm -Rf ocplib-endian-$(OCPLIB-ENDIAN_VERSION)
+
+# ---- stdint ----
+STDINT_VERSION=0.7.0
+STDINT_DIR=ocaml-stdint-$(STDINT_VERSION)
+STDINT_BINARY=$(PREFIX)/lib/ocaml/stdint/stdint.cmxa
+
+stdint-$(STDINT_VERSION).tar.gz:
+	curl -Lfo $@ https://github.com/andrenth/ocaml-stdint/archive/refs/tags/$(STDINT_VERSION).tar.gz
+
+$(STDINT_DIR): stdint-$(STDINT_VERSION).tar.gz
+	tar xzf $<
+
+$(STDINT_BINARY): $(DUNE_BINARY) | $(STDINT_DIR)
+	cd $| && dune build && dune install
+
+stdint: $(STDINT_BINARY)
+.PHONY: stdint
+
+clean::
+	-rm -Rf stdint-$(STDINT_VERSION)
+
+# ---- result ----
+RESULT_VERSION=1.5
+RESULT_BINARY=$(PREFIX)/lib/ocaml/result/result.cmxa
+
+result-$(RESULT_VERSION).tar.gz:
+	curl -Lfo $@ https://github.com/janestreet/result/archive/refs/tags/$(RESULT_VERSION).tar.gz
+
+result-$(RESULT_VERSION): result-$(RESULT_VERSION).tar.gz
+	tar xzf $<
+
+$(RESULT_BINARY): $(DUNE_BINARY) | result-$(RESULT_VERSION)
+	cd $| && dune build && dune install
+
+result: $(RESULT_BINARY)
+.PHONY: result
+
+clean::
+	-rm -Rf result-$(RESULT_VERSION)
 
