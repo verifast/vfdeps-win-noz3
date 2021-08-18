@@ -1,7 +1,7 @@
 MAKEDIR:=$(shell pwd)
 PATH:=$(shell cygpath "$(MAKEDIR)"):$(shell cygpath "$(PREFIX)")/bin:$(PATH)
 
-all: ocaml findlib num ocamlbuild camlp4 gtk lablgtk
+all: ocaml findlib num ocamlbuild camlp4 gtk lablgtk dune sexplib0
 
 clean::
 	-rm -Rf $(PREFIX)
@@ -228,3 +228,47 @@ z3: $(Z3_BINARY)
 
 clean::
 	-rm -Rf $(Z3_DIR)
+
+# ---- dune ----
+DUNE_VERSION=2.0.1
+DUNE_BINARY=$(PREFIX)/bin/dune
+
+dune-$(DUNE_VERSION).tar.gz:
+	curl -Lfo $@ https://github.com/ocaml/dune/archive/refs/tags/$(DUNE_VERSION).tar.gz
+
+dune-$(DUNE_VERSION): dune-$(DUNE_VERSION).tar.gz
+	tar xzf $<
+
+$(DUNE_BINARY): | dune-$(DUNE_VERSION)
+	cd $| && ./configure --libdir=$(PREFIX)/lib/ocaml && make release && make install
+
+dune: $(DUNE_BINARY)
+.PHONY: dune
+
+clean::
+	-rm -Rf dune-$(DUNE_VERSION)
+
+DUNE_CONF_BINARY=$(PREFIX)/lib/dune-configurator/configurator.cmxa
+
+$(DUNE_CONF_BINARY): $(DUNE_BINARY) | dune-$(DUNE_VERSION)
+	cd $| && dune build @install && dune install
+
+# ---- sexplib0 ----
+SEXPLIB0_VERSION=0.14.0
+SEXPLIB0_BINARY=$(PREFIX)/lib/ocaml/sexplib0/sexplib0.cmxa
+
+sexplib0-$(SEXPLIB0_VERSION).tar.gz:
+	curl -Lfo $@ https://github.com/janestreet/sexplib0/archive/refs/tags/v$(SEXPLIB0_VERSION).tar.gz
+
+sexplib0-$(SEXPLIB0_VERSION): sexplib0-$(SEXPLIB0_VERSION).tar.gz
+	tar xzf $<
+
+$(SEXPLIB0_BINARY): $(DUNE_BINARY) | sexplib0-$(SEXPLIB0_VERSION)
+	cd $| && dune build && dune install
+
+sexplib0: $(SEXPLIB0_BINARY)
+.PHONY: sexplib0
+
+clean::
+	-rm -Rf sexplib0-$(SEXPLIB0_VERSION)
+
