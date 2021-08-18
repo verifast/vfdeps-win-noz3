@@ -176,14 +176,14 @@ gtk: $(GTK_BINARY)
 
 # ---- lablgtk ----
 
-LABLGTK_VERSION=2.18.6
+LABLGTK_VERSION=lablgtk2186
 LABLGTK_SRC=lablgtk-$(LABLGTK_VERSION)/configure
 LABLGTK_CFG=lablgtk-$(LABLGTK_VERSION)/config.make
 LABLGTK_BUILD=lablgtk-$(LABLGTK_VERSION)/src/lablgtk2.cmxa
 LABLGTK_BINARY=$(PREFIX)/lib/ocaml/lablgtk2/lablgtk2.cmxa
 
 $(LABLGTK_SRC):
-	download_and_untar https://forge.ocamlcore.org/frs/download.php/1726/lablgtk-$(LABLGTK_VERSION).tar.gz
+	download_and_untar https://github.com/garrigue/lablgtk/archive/refs/tags/$(LABLGTK_VERSION).tar.gz
 
 $(LABLGTK_CFG): $(LABLGTK_SRC) $(CAMLP4_BINARY) $(GTK_BINARY)
 	cd lablgtk-$(LABLGTK_VERSION) && \
