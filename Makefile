@@ -1,7 +1,7 @@
 MAKEDIR:=$(shell pwd)
 PATH:=$(shell cygpath "$(MAKEDIR)"):$(shell cygpath "$(PREFIX)")/bin:$(PATH)
 CXX_BUILD_TYPE?=Release
-SET_MSV_ENV:= ""$(MSVC_INSTALL_DIR)/VC/Auxiliary/Build/vcvarsall.bat"" x86
+SET_MSV_ENV:=vcvarsall.bat x86
 COMMON_CXX_PROPS=-p:Configuration=$(CXX_BUILD_TYPE) -p:Platform=Win32 -m
 
 all: ocaml findlib num ocamlbuild camlp4 gtk lablgtk csexp dune sexplib0 base res stdio cppo ocplib-endian stdint result capnp capnp-ocaml clang
