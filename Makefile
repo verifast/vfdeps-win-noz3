@@ -472,7 +472,7 @@ clean::
 	-rm -Rf $(CAPNP_DIR)
 
 # ---- llvm/clang ----
-LLVM_VERSION=11.1.0
+LLVM_VERSION=13.0.0
 LLVM_DIR=llvm-project
 LLVM_BUILD_DIR=$(LLVM_DIR)/build
 CLANG_BUILD_DIR=$(LLVM_BUILD_DIR)/tools/clang
